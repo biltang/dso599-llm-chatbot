@@ -1,0 +1,13 @@
+defaults:
+  - llm_backend: agents.yaml # config group for the LLM backend
+  - _self_
+
+hydra:
+  output_subdir: null  # null means no output directory
+  run:
+    dir: .
+rag:
+  rag_application: True # whether to use RAG as the backend
+  hub_prompt: "hwchase17/react" # the hub model to use for the RAG backend
+  prompt: null # the prompt to use for the RAG backend, if null, then defaults to hub_prompt. Allows user to override the hub prompt
+  db_path: '/home1/yongpeng/projects/dso599-llm-chatbot/chroma_vector_store/' # the path to the database for the RAG backend

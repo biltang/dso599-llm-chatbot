@@ -1,0 +1,25 @@
+chatbot_title: "Streamlit LLM Chatbot"
+llm_options: 
+  gpt3.5: 
+    model_id: gpt-3.5-turbo-0125
+    local: False
+    function_call: 
+      _target_: llms.gpt
+      _partial_: True
+  gpt4: 
+    model_id: gpt-4
+    local: False
+    function_call: 
+      _target_: llms.gpt
+      _partial_: True
+  llama3:
+    model_id: meta-llama/Meta-Llama-3-8B-Instruct
+    local: True
+    function_call: 
+      _target_: llms.llama
+      _partial_: True
+local_llm_initial_load:
+  load: True
+  model_name: llama3
+
+

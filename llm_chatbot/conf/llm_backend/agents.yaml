@@ -1,0 +1,14 @@
+chatbot_title: "Streamlit RAG ChromaDB"
+llm_options: # List of agents available for the user to choose from
+  gpt3.5: 
+    model_id: gpt-3.5-turbo-0125
+    local: False
+    function_call: 
+      _target_: react_agent.OpenAI_agent
+      _partial_: True
+  gpt4: 
+    model_id: gpt-4
+    local: False
+    function_call: 
+      _target_: react_agent.OpenAI_agent
+      _partial_: True
