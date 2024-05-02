@@ -120,7 +120,7 @@ if __name__ == '__main__':
                         help='Date of transport')
     
     # Add arguments
-    parser.add_argument('--phonenumber', type=str, default='+16319353837',
+    parser.add_argument('--phonenumber', type=str, default='+11234567890',
                         help='phone number to send the email to')
     
     # Parse arguments
