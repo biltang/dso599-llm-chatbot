@@ -28,3 +28,28 @@ def aws_send_sms(phone_number: str, message: str) -> dict:
         }
     )
     return response
+
+
+def send_email(from_email, to_email, subject, body):
+    """Send an email using AWS SES."""
+    # Create a new SES client
+    client = boto3.client('ses')
+
+    # Send an email
+    response = client.send_email(
+        Source=from_email,
+        Destination={
+            'ToAddresses': [to_email]
+        },
+        Message={
+            'Subject': {
+                'Data': subject
+            },
+            'Body': {
+                'Text': {
+                    'Data': body
+                }
+            }
+        }
+    )
+    return response

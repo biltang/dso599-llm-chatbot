@@ -105,8 +105,7 @@ def query_dynamodb_dino_tbl_by_date_tool():
             func=query_dynamodb_dino_tbl_by_date,
             name="query_dynamodb_dino_tbl_by_date",
             description="""Query DynamoDB table by date to extract relevant information about dino/dinosaur 
-                            transportation such as
-                            Dyno/Dino ID and City name.""",
+                            transportation such as Dyno/Dino ID and City name.""",
             input_arg='date',
             output_arg='dino_info'
         )

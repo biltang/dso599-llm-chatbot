@@ -6,10 +6,10 @@ import os
 from langchain.tools import tool
 
 from react_agent import OpenAI_agent, get_all_tools
-from aws_features.aws_utils import aws_send_sms
+from aws_features.aws_utils import aws_send_sms, send_email
 
 
-def dino_temp_safety_check_workflow(model_name: str, temperature: float, date: str, phonenumber: str, api_keys: dict, extra_context: str=None) -> str:
+def dino_temp_safety_check_workflow(model_name: str, temperature: float, date: str, phonenumber: str, api_keys: dict, from_email: str, to_email: str, extra_context: str=None) -> str:
     """ This function will run the workflow for the dinosaur temperature safety check.
     
     Args:
@@ -67,8 +67,6 @@ def dino_temp_safety_check_workflow(model_name: str, temperature: float, date: s
     message_info = temperature_response + ' ' + current_temp + ' ' + safety_response + ' ' + action_response
     input_msg = f"""Given this information: {message_info}
                 Craft a status email to inform the manager about the dinosaur. It should look like:
-                Subject: ...
-                
                 Dear Manager,
                 ...
                 Best
@@ -77,7 +75,10 @@ def dino_temp_safety_check_workflow(model_name: str, temperature: float, date: s
     email = agent_executor.invoke({"input": f"{input_msg}. {extra_context}"})['output']
     
     # send the email through aws
-    sms_response = aws_send_sms(phonenumber, email)
+    sms_response = send_email(from_email=from_email,
+                              to_email=to_email,
+                              subject="Dinosaur Transport Safety Check", 
+                              body=email)
     
     if sms_response.get('MessageId') and sms_response['ResponseMetadata']['HTTPStatusCode'] == 200:
         print("Message sent successfully!")
@@ -89,7 +90,8 @@ def dino_temp_safety_check_workflow(model_name: str, temperature: float, date: s
 
 def main(args):
     
-    print(f"""model name {args.modelname}, model temperature {args.temperature}, transport date {args.date}, phone number {args.phonenumber}""")
+    print(f"""model name {args.modelname}, model temperature {args.temperature}, transport date {args.date}, phone number {args.phonenumber}
+              from email {args.from_email}, to email {args.to_email}""")
     
     # load the api keys
     load_dotenv()
@@ -99,7 +101,9 @@ def main(args):
                                     temperature=args.temperature, 
                                     date=args.date, 
                                     phonenumber=args.phonenumber, 
-                                    api_keys=api_keys)
+                                    api_keys=api_keys,
+                                    from_email=args.from_email,
+                                    to_email=args.to_email)
     
     print(email)
     
@@ -109,7 +113,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="In take some arguments.")
     
     # Add arguments
-    parser.add_argument('--modelname', type=str, default='gpt-3.5-turbo-0125',
+    parser.add_argument('--modelname', type=str, default='gpt-4',
                         help='OpenAI model name to use for the chatbot') 
     
     parser.add_argument('--temperature', type=str, default=0,
@@ -122,6 +126,14 @@ if __name__ == '__main__':
     # Add arguments
     parser.add_argument('--phonenumber', type=str, default='+11234567890',
                         help='phone number to send the email to')
+    
+     # Add arguments
+    parser.add_argument('--from_email', type=str, default='billyptang@gmail.com',
+                        help='Email to send from')
+    
+     # Add arguments
+    parser.add_argument('--to_email', type=str, default='yongpeng@usc.edu',
+                        help='Email to send to')
     
     # Parse arguments
     args = parser.parse_args()
